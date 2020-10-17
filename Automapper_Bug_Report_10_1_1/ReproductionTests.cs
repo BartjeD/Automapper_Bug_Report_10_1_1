@@ -59,5 +59,35 @@ namespace Automapper_Bug_Report_10_1_1
 
             Assert.NotNull(converted);
         }
+
+        /// <summary>
+        /// Seeing this I got curious. I posited that it might have something to do with the method's name starting with Get. 
+        /// Which might cause Automapper to mistakenly assume that the method is a property.
+        /// </summary>
+        [Fact]
+        public void Workaround_Successfull()
+        {
+            var config = new MapperConfigurationExpression();
+            config.CreateMap<TestEntityWorkaround, TestDtoWorkaround>();
+
+            var mapper = new Mapper(new MapperConfiguration(config));
+
+            var testEntity = new TestEntityWorkaround
+            {
+                FullTitle = "Master",
+                AbbreviatedTitle = "Mr",
+                Gender = "Test",
+                GivenName = "Given name",
+                FamilyNamePaternal = "Paternal name",
+                CreatedAtUtc = DateTime.UtcNow,
+                Id = Guid.NewGuid(),
+                FormalSalulation = "Master Given name Paternal name",
+                ShortSalutation = "Given name",
+            };
+
+            var converted = mapper.Map<TestDtoWorkaround>(testEntity);
+
+            Assert.NotNull(converted);
+        }
     }
 }
